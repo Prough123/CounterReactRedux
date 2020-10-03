@@ -7,12 +7,13 @@ import {
     decValueAC,
     disableType,
     incValueAC, setDisableAC,
-    setErrorMessage, setMaxValueAC, setMinValueAC,
+    setErrorMessage, setMaxValueAC, setMinValueAC, thunkDecValue, thunkIncValue,
 } from "./state/counter-reducer";
 import {AppRootStateType} from "./state/redux-store";
 
 
 function App() {
+
     // Пока вводим сообщение должны быть задизейблены кнопки INC и Reset и сообщение нажать кнопку Set
     // Если Старт и Макс равны или Макс меньше Старт все кнопки задизейблены и сообщение об ошибке,
     // подсветка инпутов во время ошибки
@@ -37,24 +38,10 @@ function App() {
 
     const onSetMinValue = (e: ChangeEvent<HTMLInputElement>) => {
         dispatch(setMinValueAC(+e.currentTarget.value))
-        // if (minValue > maxValue || minValue < 0) {
-        //     dispatch(setErrorMessage(true))
-        //     dispatch(setDisableAC(true, true, true))
-        // } else {
-        //     dispatch(setErrorMessage(false))
-        //     dispatch(setDisableAC(false, false, false))
-        // }
     }
 
     const onSetMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
         dispatch(setMaxValueAC(+e.currentTarget.value))
-        // if (minValue > maxValue || 0 > maxValue ) {
-        //     dispatch(setErrorMessage(true))
-        //     dispatch(setDisableAC(true, true, true))
-        // } else {
-        //     dispatch(setErrorMessage(true))
-        //     dispatch(setDisableAC(false, false, false))
-        // }
     }
 
     const setValue = (minValue: number, maxValue: number) => {
@@ -64,21 +51,11 @@ function App() {
     }
 
     const increaseValue = () => {
-        if (currentValue < maxValue) {
-            dispatch(incValueAC())
-        }
-        if ((maxValue - 1) === currentValue) {
-            dispatch(setDisableAC(true, true, false, false))
-        }
+       thunkIncValue()
     }
 
     const decreaseValue = () => {
-        if (currentValue > minValue) {
-            dispatch(decValueAC())
-        }
-        if ((minValue + 1) === currentValue) {
-            dispatch(setDisableAC(true, false, true, false))
-        }
+        thunkDecValue()
     }
 
     const resetValue = () => {

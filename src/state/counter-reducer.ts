@@ -1,3 +1,6 @@
+import {Dispatch} from "react";
+import {AppRootStateType} from "./redux-store";
+
 const INCREASE_VALUE = 'INCREASE_VALUE'
 const SET_MAX_VALUE = 'SET_MAX_VALUE'
 const SET_MIN_VALUE = 'SET_MIN_VALUE'
@@ -156,4 +159,25 @@ export type setErrorACType = {
     type: typeof SET_ERROR
     error: boolean
 }
+
+//thunk
+
+export const thunkIncValue = () => (dispatch:Dispatch< ActionsType>, getState:AppRootStateType) => {
+    if (getState.counter.currentValue < getState.counter.maxValue) {
+        dispatch(incValueAC())
+    }
+    if (( getState.counter.maxValue - 1) === getState.counter.currentValue) {
+        dispatch(setDisableAC(true, true, false, false))
+    }
+}
+
+export const thunkDecValue = () => (dispatch:Dispatch< ActionsType>, getState:AppRootStateType) => {
+    if (getState.counter.currentValue > getState.counter.minValue) {
+        dispatch(incValueAC())
+    }
+    if (( getState.counter.minValue + 1) === getState.counter.currentValue) {
+        dispatch(setDisableAC(true, true, false, false))
+    }
+}
+
 

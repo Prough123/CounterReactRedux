@@ -51,11 +51,11 @@ function App() {
     }
 
     const increaseValue = () => {
-       thunkIncValue()
+       dispatch(thunkIncValue())
     }
 
     const decreaseValue = () => {
-        thunkDecValue()
+        dispatch(thunkDecValue())
     }
 
     const resetValue = () => {

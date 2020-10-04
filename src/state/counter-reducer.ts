@@ -162,21 +162,23 @@ export type setErrorACType = {
 
 //thunk
 
-export const thunkIncValue = () => (dispatch:Dispatch< ActionsType>, getState:AppRootStateType) => {
-    if (getState.counter.currentValue < getState.counter.maxValue) {
+export const thunkIncValue = () => (dispatch:Dispatch<ActionsType>, getState:() => AppRootStateType) => {
+   const state = getState()
+    if (state.counter.currentValue < state.counter.maxValue) {
         dispatch(incValueAC())
     }
-    if (( getState.counter.maxValue - 1) === getState.counter.currentValue) {
+    if (( state.counter.maxValue - 1) === state.counter.currentValue) {
         dispatch(setDisableAC(true, true, false, false))
     }
 }
 
-export const thunkDecValue = () => (dispatch:Dispatch< ActionsType>, getState:AppRootStateType) => {
-    if (getState.counter.currentValue > getState.counter.minValue) {
-        dispatch(incValueAC())
+export const thunkDecValue = () => (dispatch:Dispatch<ActionsType>, getState:() => AppRootStateType) => {
+    const state = getState()
+    if (state.counter.currentValue > state.counter.minValue) {
+        dispatch(decValueAC())
     }
-    if (( getState.counter.minValue + 1) === getState.counter.currentValue) {
-        dispatch(setDisableAC(true, true, false, false))
+    if (( state.counter.minValue + 1) === state.counter.currentValue) {
+        dispatch(setDisableAC(true, false, true, false))
     }
 }
 

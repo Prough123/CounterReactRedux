@@ -2,30 +2,19 @@ import {Dispatch} from "react";
 import {AppRootStateType} from "./redux-store";
 
 const INCREASE_VALUE = 'INCREASE_VALUE'
-const SET_MAX_VALUE = 'SET_MAX_VALUE'
-const SET_MIN_VALUE = 'SET_MIN_VALUE'
+const SET_INTERIM_MIN_VALUE = 'SET_INTERIM_MIN_VALUE'
+const SET_INTERIM_MAX_VALUE = 'SET_INTERIM_MAX_VALUE'
 const DECREASE_VALUE = 'DECREASE_VALUE'
 const SET_DISABLE = 'SET_DISABLE'
+const SET_SETTINGS = 'SET_SETTINGS'
 const SET_ERROR = 'SET_ERROR'
 const errorText = 'set value pls'
 
 export type disableType = typeof initialState.disable
-export type initialStateType = {
-    maxValue: number
-    minValue: number
-    error: boolean
-    currentValue: number
-    disable: {
-        disabledSetValue: boolean
-        disabledIncValue: boolean
-        disabledDecValue: boolean
-        disabledResetValue: boolean
-    }
-    setErrorMessage: string
-}
-
 
 const initialState = {
+    interimValueMin: 0,
+    interimValueMax: 0,
     maxValue: 0,
     minValue: 0,
     disable: {
@@ -34,44 +23,55 @@ const initialState = {
         disabledDecValue: false,
         disabledResetValue: false,
     },
-    setErrorMessage: errorText,
+    errorMessage: errorText,
     error: true,
     currentValue: 0,
-} as initialStateType
+}
+
+export type initialStateType = typeof initialState
+
 
 type ActionsType =
     incValueACType
     | decValueACType
-    | setMinValueACType
     | setErrorACType
-    | setMaxValueACType
     | setDisableACType
+    | setInterimMaxValueACType
+    | setInterimMinValueACType
+| setSettingsACType
 
 
 export const counterReducer = (state: initialStateType = initialState, action: ActionsType): initialStateType => {
     switch (action.type) {
-        case 'SET_MAX_VALUE': {
+        case "SET_INTERIM_MAX_VALUE": {
             return {
-                ...state, maxValue: action.maxValue,
+                ...state, interimValueMax: action.max,
                 disable: {
                     ...state.disable,
-                    disabledIncValue: state.minValue >= action.maxValue || action.maxValue < 0,
-                    disabledSetValue: state.minValue >= action.maxValue || action.maxValue < 0,
-                    disabledDecValue: state.minValue >= action.maxValue || action.maxValue < 0,
-                    disabledResetValue: state.minValue >= action.maxValue || action.maxValue < 0,
+                    disabledIncValue: state.interimValueMin >= action.max || action.max < 0,
+                    disabledSetValue: state.interimValueMin >= action.max || action.max < 0,
+                    disabledDecValue: state.interimValueMin >= action.max || action.max < 0,
+                    disabledResetValue: state.interimValueMin >= action.max || action.max < 0,
+                }
+
+            }
+        }
+        case "SET_INTERIM_MIN_VALUE": {
+            return {
+                ...state, interimValueMin: action.min,
+                disable: {
+                    ...state.disable,
+                        disabledDecValue: action.min >= state.interimValueMax || action.min < 0,
+                        disabledSetValue: action.min >= state.interimValueMax || action.min < 0,
+                        disabledIncValue: action.min >= state.interimValueMax || action.min < 0,
+                        disabledResetValue: action.min >= state.interimValueMax || action.min < 0,
                 }
             }
         }
-        case 'SET_MIN_VALUE': {
+        case 'SET_SETTINGS': {
             return {
-                ...state, currentValue: action.minValue, minValue: action.minValue,
-                disable: {
-                    ...state.disable,
-                    disabledDecValue: action.minValue >= state.maxValue || action.minValue < 0,
-                    disabledSetValue: action.minValue >= state.maxValue || action.minValue < 0,
-                    disabledIncValue: action.minValue >= state.maxValue || action.minValue < 0,
-                    disabledResetValue: action.minValue >= state.maxValue || action.minValue < 0,
-                }
+                ...state, maxValue: action.maxValue, minValue: action.minValue, currentValue: action.minValue
+
             }
         }
         case 'INCREASE_VALUE': {
@@ -98,13 +98,25 @@ export const counterReducer = (state: initialStateType = initialState, action: A
             }
         }
         case 'SET_ERROR': {
-            return {...state, setErrorMessage: state.setErrorMessage, error: action.error}
+            return {...state, errorMessage: state.errorMessage, error: action.error}
         }
         default: {
             return state
         }
     }
 }
+
+export const setSettingsAC = (minValue: number, maxValue: number): setSettingsACType => ({
+    type: 'SET_SETTINGS',
+    minValue, maxValue
+})
+
+export type setSettingsACType = {
+    type: typeof SET_SETTINGS
+    minValue: number
+    maxValue: number
+}
+
 
 export const incValueAC = (): incValueACType => ({type: 'INCREASE_VALUE'})
 export type incValueACType = {
@@ -118,22 +130,24 @@ export type decValueACType = {
 }
 
 
-export const setMinValueAC = (minValue: number): setMinValueACType => ({
-    type: 'SET_MIN_VALUE',
-    minValue
+export const setInterimMinValueAC = (min: number): setInterimMinValueACType => ({
+    type: 'SET_INTERIM_MIN_VALUE',
+    min
 })
 
-export const setMaxValueAC = (maxValue: number): setMaxValueACType => ({
-    type: 'SET_MAX_VALUE',
-    maxValue
-})
-export type setMinValueACType = {
-    type: typeof SET_MIN_VALUE
-    minValue: number
+export type setInterimMinValueACType = {
+    type: typeof SET_INTERIM_MIN_VALUE
+    min: number
 }
-export type setMaxValueACType = {
-    type: typeof SET_MAX_VALUE
-    maxValue: number
+
+export const setInterimMaxValueAC = (max: number): setInterimMaxValueACType => ({
+    type: 'SET_INTERIM_MAX_VALUE',
+    max
+})
+
+export type setInterimMaxValueACType = {
+    type: typeof SET_INTERIM_MAX_VALUE
+    max: number
 }
 
 export const setDisableAC = (disabledSetValue: boolean,
@@ -162,22 +176,22 @@ export type setErrorACType = {
 
 //thunk
 
-export const thunkIncValue = () => (dispatch:Dispatch<ActionsType>, getState:() => AppRootStateType) => {
-   const state = getState()
+export const thunkIncValue = () => (dispatch: Dispatch<ActionsType>, getState: () => AppRootStateType) => {
+    const state = getState()
     if (state.counter.currentValue < state.counter.maxValue) {
         dispatch(incValueAC())
     }
-    if (( state.counter.maxValue - 1) === state.counter.currentValue) {
+    if ((state.counter.maxValue - 1) === state.counter.currentValue) {
         dispatch(setDisableAC(true, true, false, false))
     }
 }
 
-export const thunkDecValue = () => (dispatch:Dispatch<ActionsType>, getState:() => AppRootStateType) => {
+export const thunkDecValue = () => (dispatch: Dispatch<ActionsType>, getState: () => AppRootStateType) => {
     const state = getState()
     if (state.counter.currentValue > state.counter.minValue) {
         dispatch(decValueAC())
     }
-    if (( state.counter.minValue + 1) === state.counter.currentValue) {
+    if ((state.counter.minValue + 1) === state.counter.currentValue) {
         dispatch(setDisableAC(true, false, true, false))
     }
 }

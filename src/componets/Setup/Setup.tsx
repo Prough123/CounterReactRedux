@@ -8,7 +8,12 @@ type SetValueType = {
     onSetMinValue: (e: ChangeEvent<HTMLInputElement>) => void
     onSetMaxValue: (e: ChangeEvent<HTMLInputElement>) => void
     onChangeSetValue: () => void
-    disabledSetValue: boolean
+    disable: {
+        disabledSetValue: boolean
+        disabledIncValue: boolean
+        disabledDecValue: boolean
+        disabledResetValue: boolean
+    }
     minValue: number
     maxValue: number
 }
@@ -18,14 +23,14 @@ export const Setup = React.memo((props: SetValueType) => {
     return (
         <div>
                 <div>
-                    <Input  type="number" value={props.minValue} error={props.disabledSetValue} onChange={props.onSetMinValue}/>
+                    <Input  type="number" value={props.minValue} error={props.disable.disabledSetValue} onChange={props.onSetMinValue}/>
                     <span>Min</span>
                 </div>
-                <Button variant="contained" color="secondary" disabled={props.disabledSetValue}
+                <Button variant="contained" color="secondary" disabled={props.disable.disabledSetValue}
                         onClick={props.onChangeSetValue}>Set Value</Button>
                 <div>
 
-                    <Input type="number" value={props.maxValue} error={props.disabledSetValue}   onChange={props.onSetMaxValue}/>
+                    <Input type="number" value={props.maxValue} error={props.disable.disabledSetValue}   onChange={props.onSetMaxValue}/>
                     <span>Max</span>
                 </div>
         </div>

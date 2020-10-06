@@ -19,7 +19,7 @@ type OutputType = {
     textError: string
 }
 
-export const Output = (props: OutputType) => {
+export const Output = React.memo((props: OutputType) => {
 
     return (
         <div>
@@ -27,13 +27,13 @@ export const Output = (props: OutputType) => {
                 <span>{props.textError}</span>
                 : <span>{props.currentValue}</span>
             }
-            {/*<span>{props.currentValue}</span>*/}
             <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledIncValue}
                     onClick={props.incValue}>+</Button>
             <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledDecValue}
                     onClick={props.decValue}>-</Button>
-            <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledResetValue} onClick={props.reset}>reset</Button>
+            <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledResetValue}
+                    onClick={props.reset}>reset</Button>
         </div>
     )
 
-}
+})

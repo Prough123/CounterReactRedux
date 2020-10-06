@@ -1,12 +1,10 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useCallback} from 'react';
 import './App.css';
 import {Setup} from "./componets/Setup/Setup";
 import {Output} from "./componets/Output/Output";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    decValueAC,
     disableType,
-    incValueAC, setDisableAC,
     setErrorMessage, setMaxValueAC, setMinValueAC, thunkDecValue, thunkIncValue,
 } from "./state/counter-reducer";
 import {AppRootStateType} from "./state/redux-store";
@@ -32,36 +30,36 @@ function App() {
 
     const dispatch = useDispatch()
 
-    const onChangeSetValue = () => {
+    const onChangeSetValue =  useCallback(() => {
         setValue(minValue, maxValue)
-    }
+    },[])
 
-    const onSetMinValue = (e: ChangeEvent<HTMLInputElement>) => {
+    const onSetMinValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         dispatch(setMinValueAC(+e.currentTarget.value))
-    }
+    },[])
 
-    const onSetMaxValue = (e: ChangeEvent<HTMLInputElement>) => {
+    const onSetMaxValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         dispatch(setMaxValueAC(+e.currentTarget.value))
-    }
+    },[])
 
-    const setValue = (minValue: number, maxValue: number) => {
+    const setValue = useCallback((minValue: number, maxValue: number) => {
         dispatch(setMaxValueAC(maxValue))
         dispatch(setMinValueAC(minValue))
         dispatch(setErrorMessage(false))
-    }
+    },[minValue, maxValue])
 
-    const increaseValue = () => {
+    const increaseValue = useCallback(() => {
        dispatch(thunkIncValue())
-    }
+    },[])
 
-    const decreaseValue = () => {
+    const decreaseValue = useCallback(() => {
         dispatch(thunkDecValue())
-    }
+    },[])
 
-    const resetValue = () => {
+    const resetValue = useCallback(() => {
         dispatch(setMaxValueAC(0))
         dispatch(setMinValueAC(0))
-    }
+    },[])
 
     return (
         <div className="App">

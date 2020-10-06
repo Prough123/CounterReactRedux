@@ -18,14 +18,14 @@ export const Setup = React.memo((props: SetValueType) => {
     return (
         <div>
                 <div>
-                    <Input  type="number" value={props.minValue} onChange={props.onSetMinValue}/>
+                    <Input  type="number" value={props.minValue} error={props.disabledSetValue} onChange={props.onSetMinValue}/>
                     <span>Min</span>
                 </div>
-                <Button variant="contained" color="secondary"  disabled={props.disabledSetValue}
+                <Button variant="contained" color="secondary" disabled={props.disabledSetValue}
                         onClick={props.onChangeSetValue}>Set Value</Button>
                 <div>
 
-                    <Input type="number" value={props.maxValue} onChange={props.onSetMaxValue}/>
+                    <Input type="number" value={props.maxValue} error={props.disabledSetValue}   onChange={props.onSetMaxValue}/>
                     <span>Max</span>
                 </div>
         </div>

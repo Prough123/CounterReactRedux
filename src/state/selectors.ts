@@ -4,4 +4,4 @@ interface IRootState extends AppRootStateType {}
 
 // export const selectDisable = (state: IRootState) => state.counter.disable;
 
-export const selectDisable = (state: IRootState) => state.counter
+export const selectStateCounter = (state: IRootState) => state.counter

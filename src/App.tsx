@@ -11,7 +11,7 @@ import {
     thunkDecValue,
     thunkIncValue,
 } from "./state/counter-reducer";
-import {selectDisable} from "./state/selectors";
+import {selectStateCounter} from "./state/selectors";
 
 
 type ResponseType<T> = {
@@ -28,7 +28,7 @@ function App() {
     // Сделать переключатель на ошибку , если ошибка то вывыести сообщение об ошибке , если ошибки нету то вывыести пожалуйста введите значение
     // а если есть значение то показать значение
 
-    const {disable, maxValue, minValue, errorMessage, error, currentValue} = useSelector(selectDisable)
+    const {disable, maxValue, minValue, errorMessage, error, currentValue} = useSelector(selectStateCounter)
     const dispatch = useDispatch()
 
     const [min, setMin] = useState(minValue)

@@ -4,14 +4,11 @@ import {Setup} from "./componets/Setup/Setup";
 import {Output} from "./componets/Output/Output";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    setErrorMessage,
-    setInterimMaxValueAC,
-    setInterimMinValueAC,
-    setSettingsAC,
     thunkDecValue,
     thunkIncValue,
 } from "./state/counter-reducer";
 import {selectStateCounter} from "./state/selectors";
+import {setErrorMessageAC, setInterimMaxValueAC, setInterimMinValueAC, setSettingsAC} from "./state/actions";
 
 
 type ResponseType<T> = {
@@ -40,17 +37,20 @@ function App() {
 
     const onSetMinValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setMin(+e.currentTarget.value)
-        dispatch(setInterimMinValueAC(+e.currentTarget.value))
+        // dispatch(setInterimMinValueAC(+e.currentTarget.value))
+        dispatch(setInterimMinValueAC({min:+e.currentTarget.value}))
     }, [dispatch])
 
     const onSetMaxValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setMax(+e.currentTarget.value)
-        dispatch(setInterimMaxValueAC(+e.currentTarget.value))
+        // dispatch(setInterimMaxValueAC(+e.currentTarget.value))
+        dispatch(setInterimMaxValueAC({max:+e.currentTarget.value}))
     }, [dispatch])
 
     const setValue = useCallback((minValue: number, maxValue: number) => {
-        dispatch(setSettingsAC(minValue, maxValue))
-        dispatch(setErrorMessage(false))
+        // dispatch(setSettingsAC(minValue, maxValue))
+        dispatch(setSettingsAC({minValue:minValue,maxValue:maxValue}))
+        dispatch(setErrorMessageAC({error:false}))
     }, [dispatch])
 
     const increaseValue = useCallback(() => {
@@ -64,7 +64,7 @@ function App() {
     const resetValue = useCallback(() => {
         setMax(0)
         setMin(0)
-        dispatch(setErrorMessage(true))
+        dispatch(setErrorMessageAC({error:true}))
     }, [dispatch])
 
     return (

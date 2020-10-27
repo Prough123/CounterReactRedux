@@ -1,21 +1,24 @@
 import React, {ChangeEvent, useCallback, useState} from 'react';
-import './App.css';
+import './App.module.css';
 import {Setup} from "./componets/Setup/Setup";
-import {Output} from "./componets/Output/Output";
+import {Buttons} from "./componets/Buttons/Buttons";
 import {useDispatch, useSelector} from "react-redux";
 import {
     thunkDecValue,
     thunkIncValue,
 } from "./state/counter-reducer";
 import {selectStateCounter} from "./state/selectors";
-import {setErrorMessageAC, setInterimMaxValueAC, setInterimMinValueAC, setSettingsAC} from "./state/actions";
+import {
+    setDisableAC,
+    setErrorMessageAC,
+    setInterimMaxValueAC,
+    setInterimMinValueAC,
+    setSettingsAC
+} from "./state/actions";
+import {Paper} from "@material-ui/core";
+import style from "./App.module.css"
+import {ResetViewController} from "./componets/ResetViewController/ResetViewController";
 
-
-type ResponseType<T> = {
-    data: T
-    resultCode: number
-    messages: string[]
-}
 
 function App() {
     // Пока вводим сообщение должны быть задизейблены кнопки INC и Reset и сообщение нажать кнопку Set
@@ -37,20 +40,18 @@ function App() {
 
     const onSetMinValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setMin(+e.currentTarget.value)
-        // dispatch(setInterimMinValueAC(+e.currentTarget.value))
-        dispatch(setInterimMinValueAC({min:+e.currentTarget.value}))
+        dispatch(setInterimMinValueAC({min: +e.currentTarget.value}))
     }, [dispatch])
 
     const onSetMaxValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setMax(+e.currentTarget.value)
-        // dispatch(setInterimMaxValueAC(+e.currentTarget.value))
-        dispatch(setInterimMaxValueAC({max:+e.currentTarget.value}))
+        dispatch(setInterimMaxValueAC({max: +e.currentTarget.value}))
     }, [dispatch])
 
     const setValue = useCallback((minValue: number, maxValue: number) => {
-        // dispatch(setSettingsAC(minValue, maxValue))
-        dispatch(setSettingsAC({minValue:minValue,maxValue:maxValue}))
-        dispatch(setErrorMessageAC({error:false}))
+        dispatch(setSettingsAC({minValue: minValue, maxValue: maxValue}))
+
+        dispatch(setErrorMessageAC({error: false}))
     }, [dispatch])
 
     const increaseValue = useCallback(() => {
@@ -64,20 +65,23 @@ function App() {
     const resetValue = useCallback(() => {
         setMax(0)
         setMin(0)
-        dispatch(setErrorMessageAC({error:true}))
+        dispatch(setErrorMessageAC({error: true}))
     }, [dispatch])
 
     return (
-        <div className="App">
+        <div className={style.app}>
             <div className="wrapper">
-                <Setup error={error} disable={disable}
-                       onSetMaxValue={onSetMaxValue} onSetMinValue={onSetMinValue}
-                       onChangeSetValue={onChangeSetValue}
-                       maxValue={max} minValue={min}/>
-                <Output textError={errorMessage} error={error} reset={resetValue} disableBtn={disable}
-                        minValue={min} maxValue={max}
-                        currentValue={currentValue} incValue={increaseValue}
-                        decValue={decreaseValue}/>
+                <Paper elevation={3}>
+                    <Setup error={error} disable={disable}
+                           onSetMaxValue={onSetMaxValue} onSetMinValue={onSetMinValue}
+                           maxValue={max} minValue={min}/>
+                    <Buttons  disableBtn={disable}
+                             minValue={min} maxValue={max}
+                             onChangeSetValue={onChangeSetValue}
+                             incValue={increaseValue}
+                             decValue={decreaseValue}/>
+                    <ResetViewController error={error} reset={resetValue} disableBtn={disable} textError={errorMessage} currentValue={currentValue}/>
+                </Paper>
             </div>
         </div>
     );

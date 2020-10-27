@@ -1,9 +1,10 @@
 import React from 'react'
 import {Button} from "@material-ui/core";
-
+import style from "../ResetViewController/ResetViewController.module.css"
 
 type OutputType = {
-    currentValue: number
+    onChangeSetValue: () => void
+
     incValue: () => void
     decValue: () => void
     maxValue: number
@@ -14,25 +15,21 @@ type OutputType = {
         disabledDecValue: boolean
         disabledResetValue: boolean
     }
-    reset: () => void
-    error: boolean
-    textError: string
+
+
 }
 
-export const Output = React.memo((props: OutputType) => {
+export const Buttons = React.memo((props: OutputType) => {
 
     return (
-        <div>
-            {props.error ?
-                <span>{props.textError}</span>
-                : <span>{props.currentValue}</span>
-            }
+        <div className={style.container}>
             <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledIncValue}
                     onClick={props.incValue}>+</Button>
+            <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledSetValue}
+                    onClick={props.onChangeSetValue}>Set Value</Button>
             <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledDecValue}
                     onClick={props.decValue}>-</Button>
-            <Button variant="contained" color="secondary" disabled={props.disableBtn.disabledResetValue}
-                    onClick={props.reset}>reset</Button>
+
         </div>
     )
 
